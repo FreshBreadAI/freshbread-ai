@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Homepage Roast App - Standalone Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Essential styling for the test */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        input[type="url"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .error-message {
+            color: #e53e3e;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Loading UI Styles */
+        #loading {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #enhancedLoader {
+            max-width: 500px;
+            margin: 20px auto 0;
+            display: none;
+        }
+        .loading-status {
+            margin-bottom: 15px;
+            min-height: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e5e5e5;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4f46e5;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Results area */
+        #results {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        /* Test control panel */
+        .test-controls {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f4f8;
+            border-radius: 5px;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .test-button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: none;
+            background-color: #4f46e5;
+            color: white;
+            cursor: pointer;
+        }
+        .test-button.error {
+            background-color: #e53e3e;
+        }
+        .test-button.success {
+            background-color: #38a169;
+        }
+        h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Homepage Roast App - Test Mode</h1>
+        <p>Enter a URL below to test the enhanced loading experience.</p>
+        
+        <div class="form-container">
+            <form id="roastForm">
+                <div class="input-group">
+                    <input type="url" id="urlInput" placeholder="Enter your homepage URL (e.g., https://example.com)" required>
+                    <button type="submit">Get My Free Report <i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+        
+        <div id="loading">
+            <!-- Original spinner -->
+            <div class="spinner"></div>
+            <p>Analyzing your homepage... This may take up to 60 seconds.</p>
+            
+            <!-- Enhanced loading UI -->
+            <div id="enhancedLoader">
+                <p id="statusMessage" class="loading-status"></p>
+                <div class="progress-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div class="progress-info">
+                    <span id="progressPercentage">0%</span>
+                    <span>(Estimated time: ~60 seconds)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results">
+            <h2>Analysis Complete!</h2>
+            <p>In a real implementation, the analysis results would be displayed here.</p>
+        </div>
+        
+        <div class="test-controls">
+            <h3>Test Control Panel</h3>
+            <p>Use these buttons to manually test different states of the loading UI:</p>
+            <div class="test-buttons">
+                <button class="test-button" id="testSuccess">Test Success (5s)</button>
+                <button class="test-button error" id="testError">Test Error</button>
+                <button class="test-button" id="testLong">Test Long Loading (70s)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Feature flag - can be disabled easily if issues occur
+        const ENABLE_ENHANCED_LOADING = true;
+
+        // DOM Elements
+        const elements = {
+            roastForm: document.getElementById('roastForm'),
+            urlInput: document.getElementById('urlInput'),
+            errorMessage: document.getElementById('errorMessage'),
+            loading: document.getElementById('loading'),
+            enhancedLoader: document.getElementById('enhancedLoader'),
+            statusMessage: document.getElementById('statusMessage'),
+            progressBar: document.getElementById('progressBar'),
+            progressPercentage: document.getElementById('progressPercentage'),
+            results: document.getElementById('results'),
+            testSuccess: document.getElementById('testSuccess'),
+            testError: document.getElementById('testError'),
+            testLong: document.getElementById('testLong')
+        };
+
+        // Loading messages
+        const LOADING_MESSAGES = [
+            "Parsing your website's visual hierarchy and content flow…",
+            "Analyzing value proposition clarity and emotional resonance…",
+            "Evaluating trust signals and credibility markers…",
+            "Identifying conversion bottlenecks and friction points…",
+            "Measuring call-to-action effectiveness and visibility…",
+            "Mapping user journey and information architecture…",
+            "Preparing actionable recommendations to boost conversion rates…"
+        ];
+
+        // Loading state variables
+        let loadingState = {
+            startTime: null,
+            messageInterval: null,
+            progressInterval: null,
+            currentMessageIndex: 0
+        };
+
+        // UI Functions
+        function showError(message) {
+            // Stop enhanced loading if active
+            stopEnhancedLoading(false);
+            hideLoading();
+            
+            // Show error message
+            elements.errorMessage.textContent = message;
+            elements.errorMessage.style.display = 'block';
+        }
+
+        function hideError() {
+            elements.errorMessage.style.display = 'none';
+        }
+
+        function showLoading() {
+            console.log('Showing loading UI');
+            clearResults();
+            hideError();
+            
+            // Show the main loading container
+            elements.loading.style.display = 'block';
+            
+            if (ENABLE_ENHANCED_LOADING) {
+                try {
+                    elements.enhancedLoader.style.display = 'block';
+                    startEnhancedLoading();
+                } catch (e) {
+                    console.error('Error initializing enhanced loading:', e);
+                    elements.enhancedLoader.style.display = 'none';
+                }
+            }
+        }
+
+        function hideLoading() {
+            console.log('Hiding loading UI');
+            
+            // Stop enhanced loading if enabled
+            if (ENABLE_ENHANCED_LOADING) {
+                try {
+                    stopEnhancedLoading();
+                } catch (e) {
+                    console.error('Error stopping enhanced loading:', e);
+                }
+            }
+            
+            // Hide the loading container
+            elements.loading.style.display = 'none';
+        }
+
+        function clearResults() {
+            elements.results.style.display = 'none';
+        }
+
+        function showResults() {
+            elements.results.style.display = 'block';
+        }
+
+        // Enhanced Loading Functions
+        function startEnhancedLoading() {
+            if (!ENABLE_ENHANCED_LOADING) return;
+            
+            // Initialize state
+            loadingState.startTime = Date.now();
+            loadingState.currentMessageIndex = 0;
+            
+            // Set initial message
+            if (elements.statusMessage) {
+                elements.statusMessage.textContent = LOADING_MESSAGES[0];
+            }
+            
+            // Start message cycling
+            loadingState.messageInterval = setInterval(() => {
+                loadingState.currentMessageIndex = (loadingState.currentMessageIndex + 1) % LOADING_MESSAGES.length;
+                if (elements.statusMessage) {
+                    elements.statusMessage.textContent = LOADING_MESSAGES[loadingState.currentMessageIndex];
+                }
+            }, 7000);
+            
+            // Start progress update
+            loadingState.progressInterval = setInterval(() => {
+                const elapsed = Date.now() - loadingState.startTime;
+                const progress = Math.min(elapsed / 60000, 0.95); // Cap at 95%
+                const percentage = Math.round(progress * 100);
+                
+                if (elements.progressBar) {
+                    elements.progressBar.style.width = percentage + '%';
+                }
+                if (elements.progressPercentage) {
+                    elements.progressPercentage.textContent = percentage + '%';
+                }
+            }, 200);
+            
+            console.log("Enhanced loading started");
+        }
+
+        function stopEnhancedLoading(success = false) {
+            if (!ENABLE_ENHANCED_LOADING) return;
+            
+            // Clear intervals
+            if (loadingState.messageInterval) {
+                clearInterval(loadingState.messageInterval);
+                loadingState.messageInterval = null;
+            }
+            
+            if (loadingState.progressInterval) {
+                clearInterval(loadingState.progressInterval);
+                loadingState.progressInterval = null;
+            }
+            
+            // Jump to 100% if successful
+            if (success) {
+                if (elements.progressBar) {
+                    elements.progressBar.style.width = '100%';
+                }
+                if (elements.progressPercentage) {
+                    elements.progressPercentage.textContent = '100%';
+                }
+            }
+            
+            console.log("Enhanced loading stopped, success:", success);
+        }
+
+        // URL validation
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Mock API call
+        function mockFetchAnalysis(url, duration = 5000) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Simulate success
+                    resolve({
+                        analysis_results: {
+                            overall_score: 7.5,
+                            summary: "This is a mock analysis result."
+                        }
+                    });
+                }, duration);
+            });
+        }
+
+        // Event Listeners
+        elements.roastForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = elements.urlInput.value.trim();
+            
+            // Validate URL
+            if (!isValidUrl(url)) {
+                showError('Please enter a valid URL (e.g., https://example.com)');
+                return;
+            }
+            
+            // Show loading and start process
+            showLoading();
+            
+            try {
+                // Use a 5 second mock API call
+                const data = await mockFetchAnalysis(url);
+                
+                // Signal successful completion
+                stopEnhancedLoading(true);
+                hideLoading();
+                
+                // Show results
+                showResults();
+                console.log('Analysis complete:', data);
+                
+            } catch (error) {
+                console.error('Error during analysis:', error);
+                showError(`Analysis failed: ${error.message}`);
+            }
+        });
+
+        // Test controls
+        elements.testSuccess.addEventListener('click', async () => {
+            showLoading();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                stopEnhancedLoading(true);
+                hideLoading();
+                showResults();
+            } catch (error) {
+                showError(`Test error: ${error.message}`);
+            }
+        });
+        
+        elements.testError.addEventListener('click', () => {
+            showLoading();
+            
+            setTimeout(() => {
+                showError('This is a test error message. In a real scenario, this would show details about what went wrong.');
+            }, 2000);
+        });
+        
+        elements.testLong.addEventListener('click', async () => {
+            showLoading();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 70000));
+                stopEnhancedLoading(true);
+                hideLoading();
+                showResults();
+            } catch (error) {
+                showError(`Test error: ${error.message}`);
+            }
+        });
+
+        // Initialize
+        console.log('Standalone test initialized');
+    </script>
+</body>
+</html>

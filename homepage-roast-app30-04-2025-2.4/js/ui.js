@@ -249,7 +249,7 @@ function showLoading() {
         if (ENABLE_ENHANCED_LOADING) {
             try {
                 // Keep the original spinner visible
-                DOMElements.loading.innerHTML = '<div class="spinner"></div><p>Analyzing your homepage... This may take up to 60 seconds.</p>';
+                DOMElements.loading.innerHTML = '<div class="spinner"></div><p>This may take up to 60 seconds.</p>';
                 
                 // Add enhanced loader element if it doesn't exist
                 if (!document.getElementById('enhancedLoader')) {
@@ -263,7 +263,7 @@ function showLoading() {
                         </div>
                         <div class="progress-info">
                             <span id="progressPercentage">0%</span>
-                            <span>(Estimated time: ~60 seconds)</span>
+                        
                         </div>
                     `;
                     DOMElements.loading.appendChild(enhancedLoaderDiv);
@@ -274,11 +274,11 @@ function showLoading() {
             } catch (e) {
                 console.error('Error initializing enhanced loading:', e);
                 // Fall back to basic loading if there's an error
-                DOMElements.loading.innerHTML = '<div class="spinner"></div><p>Analyzing your homepage... This may take up to 60 seconds.</p>';
+                DOMElements.loading.innerHTML = '<div class="spinner"></div><p>This may take up to 60 seconds.</p>';
             }
         } else {
             // Use regular loading spinner if enhanced loading is disabled
-            DOMElements.loading.innerHTML = '<div class="spinner"></div><p>Analyzing your homepage... This may take up to 60 seconds.</p>';
+            DOMElements.loading.innerHTML = '<div class="spinner"></div><p>This may take up to 60 seconds.</p>';
         }
     }
     

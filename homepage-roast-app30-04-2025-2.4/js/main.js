@@ -64,7 +64,7 @@ function initializeRoastApp() {
         elements.roastForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             console.log('Form submitted'); // Log submit event
-            const url = elements.urlInput.value.trim();
+            let url = elements.urlInput.value.trim();
 
             if (typeof isValidUrl !== 'function') {
                 console.error('ERROR: isValidUrl function not found.');
@@ -81,8 +81,17 @@ function initializeRoastApp() {
                  return;
             }
 
+            // Check if URL is missing the protocol
+            if (!url.match(/^https?:\/\//i)) {
+                // Add https:// prefix
+                url = 'https://' + url;
+                console.log('Added https:// to URL:', url);
+                // Update the input field to show the corrected URL
+                elements.urlInput.value = url;
+            }
+
             if (!isValidUrl(url)) {
-                console.log('Invalid URL entered:', url);
+                console.log('Invalid URL entered even after adding protocol:', url);
                 showError('Please enter a valid URL (e.g., https://example.com)');
                 return;
             }

@@ -197,7 +197,7 @@ function initializeRoastApp() {
                     if (error.message.toLowerCase().includes('network') || 
                         error.message.toLowerCase().includes('fetch') || 
                         error.message.toLowerCase().includes('timeout')) {
-                        errorMessage = 'Website crawler is currently at capacity. Please try again later.';
+                        errorMessage = 'Website crawler is currently at capacity or your website is blocking it. Please try again later.';
                     } else if (error.message.toLowerCase().includes('json') || 
                               error.message.toLowerCase().includes('parse')) {
                         errorMessage = 'Error processing the report data. Please try again in a few moments.';

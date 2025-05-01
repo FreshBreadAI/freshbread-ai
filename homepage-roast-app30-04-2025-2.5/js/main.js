@@ -48,16 +48,8 @@ function initializeRoastApp() {
 
     // --- Utility Functions --- (Keep isValidUrl if it's only used here, otherwise move to utils.js)
     function isValidUrl(string) {
-        // First try with the URL constructor
-        try {
-            new URL(string);
-            return true;
-        } catch (_) {
-            // If it fails, check if it's a valid domain name pattern
-            // Simple domain regex - matches something like example.com, sub.example.co.uk, etc.
-            const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/;
-            return domainRegex.test(string);
-        }
+        // Just check that it has a dot and no spaces - extremely permissive
+        return string.includes('.') && !string.includes(' ');
     }
 
     // --- Event Listeners --- 
@@ -70,46 +62,24 @@ function initializeRoastApp() {
             console.log('Form submitted'); // Log submit event
             let url = elements.urlInput.value.trim();
 
-            if (typeof isValidUrl !== 'function') {
-                console.error('ERROR: isValidUrl function not found.');
-                if (typeof showError === 'function') {
-                    showError('An internal error occurred. Please try again later.');
-                } else {
-                     alert('An internal error occurred. Please try again later.');
-                }
+            if (typeof showError !== 'function') {
+                console.error('ERROR: showError function not found.');
+                alert('Please enter a valid URL (e.g., example.com)');
                 return;
             }
-             if (typeof showError !== 'function') {
-                console.error('ERROR: showError function not found.');
-                 alert('Please enter a valid URL (e.g., https://example.com)');
-                 return;
+
+            // Super simple validation - just make sure there's content and at least one dot
+            if (!url || !url.includes('.')) {
+                console.log('Invalid URL (empty or no dot):', url);
+                showError('Please enter a valid URL (e.g., example.com)');
+                return;
             }
 
-            // First check if it looks like a valid domain without protocol
-            const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/;
-            if (domainRegex.test(url)) {
-                // It's a domain name, add https:// prefix
-                url = 'https://' + url;
-                console.log('Added https:// to domain:', url);
-                // Update the input field to show the corrected URL
-                elements.urlInput.value = url;
-            } 
-            // Check if URL is missing the protocol (handles other formats)
-            else if (!url.match(/^https?:\/\//i)) {
-                // Add https:// prefix
+            // Add https:// if it's missing
+            if (!url.match(/^https?:\/\//i)) {
                 url = 'https://' + url;
                 console.log('Added https:// to URL:', url);
-                // Update the input field to show the corrected URL
                 elements.urlInput.value = url;
-            }
-
-            try {
-                // Final validation check
-                new URL(url);
-            } catch (err) {
-                console.log('Invalid URL entered even after correction:', url);
-                showError('Please enter a valid URL (e.g., https://example.com)');
-                return;
             }
             
             console.log(`Valid URL submitted: ${url}`);
